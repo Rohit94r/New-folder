@@ -15,13 +15,11 @@ const connectDB = async () => {
     mongoose.set('strictQuery', false);
     
     const conn = await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb+srv://rjdhav67:sSsDvMd4XhDpOv6S@roomeze.cmvpkvz.mongodb.net/',
+      process.env.MONGODB_URI || 'mongodb+srv://rjdhav67:sSsDvMd4XhDpOv6S@roomeze.cmvpkvz.mongodb.net/roomeze',
       {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         maxPoolSize: 10, // Maximum number of connections in the pool
         minPoolSize: 2,  // Minimum number of connections in the pool
-        serverSelectionTimeoutMS: 5000, // Timeout for server selection
+        serverSelectionTimeoutMS: 10000, // Timeout for server selection
         socketTimeoutMS: 45000, // Timeout for socket operations
         family: 4, // Use IPv4, skip trying IPv6
       }
