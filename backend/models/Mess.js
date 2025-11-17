@@ -3,15 +3,15 @@ const mongoose = require('mongoose');
 const mealSchema = new mongoose.Schema({
   name: {
     type: String, // e.g., "Breakfast", "Lunch", "Dinner"
-    required: true,
+    required: false, // Make optional since menu can be just text
   },
   items: {
     type: String, // e.g., "Poha, Jalebi, Tea/Coffee"
-    required: true,
+    required: false, // Make optional since menu can be just text
   },
   price: {
     type: Number,
-    required: true,
+    required: false, // Make optional
   },
 });
 
@@ -81,7 +81,10 @@ const messSchema = new mongoose.Schema({
     type: String,
   },
   mealsIncluded: {
-    type: String,
+    breakfast: { type: Boolean, default: false },
+    lunch: { type: Boolean, default: false },
+    dinner: { type: Boolean, default: false },
+    snacks: { type: Boolean, default: false }
   },
   createdAt: {
     type: Date,

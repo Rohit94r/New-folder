@@ -15,7 +15,7 @@ const connectDB = async () => {
     mongoose.set('strictQuery', false);
     
     const conn = await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb://localhost:27017/roomeze',
+      process.env.MONGODB_URI || 'mongodb+srv://rjdhav67:sSsDvMd4XhDpOv6S@roomeze.cmvpkvz.mongodb.net/',
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,

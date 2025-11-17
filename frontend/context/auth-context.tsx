@@ -39,9 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = (userData: any) => {
-    // Store user data in localStorage
+    // Store user data in localStorage (token should be stored by auth.ts login function)
     if (typeof window !== "undefined") {
-      localStorage.setItem("authToken", "demo_token_123");
       localStorage.setItem("user", JSON.stringify(userData));
     }
     setUser(userData)

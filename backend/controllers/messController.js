@@ -56,10 +56,10 @@ const createMessPartnerPublic = asyncHandler(async (req, res) => {
     phone,
     timings,
     isOfficial: false, // Always false for public submissions
-    menu: Array.isArray(menu) ? menu.map(item => ({
-      name: item,
-      items: item,
-      price: 0 // Default price for public submissions
+    menu: Array.isArray(menu) && menu.length > 0 ? menu.filter(item => item && item.trim()).map(item => ({
+      items: typeof item === 'string' ? item.trim() : String(item),
+      name: '',
+      price: 0
     })) : [],
     image,
     distance,
@@ -106,10 +106,10 @@ const createMessPartner = asyncHandler(async (req, res) => {
     phone,
     timings,
     isOfficial,
-    menu: Array.isArray(menu) ? menu.map(item => ({
-      name: item,
-      items: item,
-      price: 0 // Default price
+    menu: Array.isArray(menu) && menu.length > 0 ? menu.filter(item => item && item.trim()).map(item => ({
+      items: typeof item === 'string' ? item.trim() : String(item),
+      name: '',
+      price: 0
     })) : [],
     image,
     distance,
@@ -166,10 +166,10 @@ const updateMessPartner = asyncHandler(async (req, res) => {
     mess.phone = phone || mess.phone;
     mess.timings = timings || mess.timings;
     mess.isOfficial = isOfficial !== undefined ? isOfficial : mess.isOfficial;
-    mess.menu = Array.isArray(menu) ? menu.map(item => ({
-      name: item,
-      items: item,
-      price: 0 // Default price
+    mess.menu = Array.isArray(menu) && menu.length > 0 ? menu.filter(item => item && item.trim()).map(item => ({
+      items: typeof item === 'string' ? item.trim() : String(item),
+      name: '',
+      price: 0
     })) : mess.menu;
     mess.image = image || mess.image;
     mess.rating = rating || mess.rating;

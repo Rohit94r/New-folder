@@ -8,7 +8,7 @@ export const login = async (email: string, password: string) => {
     
     // Store token in localStorage
     if (typeof window !== "undefined") {
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
     }
     
@@ -25,7 +25,7 @@ export const register = async (userData: any) => {
     
     // Store token in localStorage
     if (typeof window !== "undefined") {
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
     }
     
@@ -38,7 +38,7 @@ export const register = async (userData: any) => {
 // Logout function
 export const logout = () => {
   if (typeof window !== "undefined") {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
   }
 };
@@ -46,9 +46,9 @@ export const logout = () => {
 // Get auth token
 export const getAuthToken = () => {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("authToken");
+    return localStorage.getItem("token") || "";
   }
-  return null;
+  return "";
 };
 
 // Get user data
