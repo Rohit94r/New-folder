@@ -77,11 +77,11 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Get in Touch</h3>
             <div className="space-y-3 text-sm">
               <a
-                href="mailto:support@roomly.com"
+                href="mailto:support@roomeze.com"
                 className="flex items-center gap-2 text-muted-foreground hover:text-primary transition"
               >
                 <Mail className="w-4 h-4" />
-                support@roomly.com
+                support@roomeze.com
               </a>
               <a
                 href="tel:+919876543210"
