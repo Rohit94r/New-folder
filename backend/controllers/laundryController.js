@@ -1,4 +1,5 @@
 const Laundry = require('../models/Laundry');
+const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 
 // @desc    Get all laundry services
