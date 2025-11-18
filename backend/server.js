@@ -21,14 +21,13 @@ const ownerRoutes = require('./routes/owner');
 // Initialize app
 const app = express();
 
-// Trust proxy for Vercel deployment
+// Trust proxy for production deployment
 app.set('trust proxy', 1);
 
 // CORS Configuration - Allow both development and production origins
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://roomeze.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean); // Remove undefined values
 
@@ -82,7 +81,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Root endpoint for Vercel
+// Root endpoint
 app.get('/', (req, res) => {
   res.status(200).json({ 
     message: 'Roomeze API Server',
@@ -119,13 +118,8 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// For Vercel serverless deployment, export the app
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
-  // For local development, start the server
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  });
-}
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
