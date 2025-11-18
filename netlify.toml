@@ -1,0 +1,7 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  # No publish directory - @netlify/plugin-nextjs handles output automatically
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
