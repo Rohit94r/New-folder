@@ -35,8 +35,18 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-muted-foreground hover:text-primary transition">
-                  About Us
+                <Link href="/laundry" className="text-muted-foreground hover:text-primary transition">
+                  Laundry
+                </Link>
+              </li>
+              <li>
+                <Link href="/printing" className="text-muted-foreground hover:text-primary transition">
+                  Printing
+                </Link>
+              </li>
+              <li>
+                <Link href="/events" className="text-muted-foreground hover:text-primary transition">
+                  Events
                 </Link>
               </li>
             </ul>
@@ -46,24 +56,19 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-primary transition">
+                <Link href="/community" className="text-muted-foreground hover:text-primary transition">
+                  Community
+                </Link>
+              </li>
+              <li>
+                <Link href="/service-provider/add" className="text-muted-foreground hover:text-primary transition">
+                  Service Provider
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:support@roomeze.com" className="text-muted-foreground hover:text-primary transition">
                   Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition">
-                  Terms of Service
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
