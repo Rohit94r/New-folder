@@ -34,10 +34,13 @@ export default function EventsPage() {
     const fetchEvents = async () => {
       try {
         setLoading(true)
+        setError(null)
         const data = await eventsAPI.getAll()
         setEvents(data)
-      } catch (err) {
-        setError("Failed to load events. Please try again later.")
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load events. Please try again later."
+        setError(errorMessage)
+        console.error("Error fetching events:", err)
       } finally {
         setLoading(false)
       }

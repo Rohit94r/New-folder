@@ -89,6 +89,7 @@ export default function CommunityPage() {
     const fetchData = async () => {
       try {
         setLoading(true)
+        setError(null)
         
         // Fetch community posts
         const postsData = await communityAPI.getPosts()
@@ -103,8 +104,9 @@ export default function CommunityPage() {
           post.category === 'LostAndFound'
         )
         setLostFoundItems(lostFound)
-      } catch (err) {
-        setError("Failed to load community data. Please try again later.")
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load community data. Please try again later."
+        setError(errorMessage)
         console.error("Error fetching community data:", err)
       } finally {
         setLoading(false)

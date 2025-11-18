@@ -37,10 +37,12 @@ export default function PrintingPage() {
     const fetchPrintingServices = async () => {
       try {
         setLoading(true)
+        setError(null)
         const data = await printingAPI.getAll()
         setPrintingServices(data)
-      } catch (err) {
-        setError("Failed to load printing services. Please try again later.")
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load printing services. Please try again later."
+        setError(errorMessage)
         console.error("Error fetching printing services:", err)
       } finally {
         setLoading(false)

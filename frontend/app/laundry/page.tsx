@@ -37,10 +37,12 @@ export default function LaundryPage() {
     const fetchLaundryServices = async () => {
       try {
         setLoading(true)
+        setError(null)
         const data = await laundryAPI.getAll()
         setLaundryServices(data)
-      } catch (err) {
-        setError("Failed to load laundry services. Please try again later.")
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load laundry services. Please try again later."
+        setError(errorMessage)
         console.error("Error fetching laundry services:", err)
       } finally {
         setLoading(false)

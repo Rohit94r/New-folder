@@ -36,11 +36,13 @@ export default function PropertiesPage() {
     const fetchProperties = async () => {
       try {
         setLoading(true)
+        setError(null)
         // Fetch properties within 2km of Atharva College
         const data = await propertiesAPI.getNearby()
         setProperties(data)
-      } catch (err) {
-        setError("Failed to load properties. Please try again later.")
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load properties. Please try again later."
+        setError(errorMessage)
         console.error("Error fetching properties:", err)
       } finally {
         setLoading(false)

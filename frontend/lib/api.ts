@@ -21,14 +21,34 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
     const response = await fetch(url, config);
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `API request failed with status ${response.status}`);
+      // Properly catch and display backend errors to the frontend
+      let errorMessage = `Request failed with status ${response.status}`;
+      
+      try {
+        const errorData = await response.json();
+        // Extract error message from backend response
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        }
+      } catch (parseError) {
+        // If JSON parsing fails, use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      
+      console.error(`API Error [${response.status}] for ${url}:`, errorMessage);
+      throw new Error(errorMessage);
     }
     
     return await response.json();
   } catch (error: any) {
     console.error(`API request failed for ${url}:`, error);
-    throw new Error(error.message || 'Network error occurred');
+    // Re-throw the error with proper message
+    if (error.message) {
+      throw error;
+    }
+    throw new Error('Network error occurred. Please check your connection.');
   }
 }
 
