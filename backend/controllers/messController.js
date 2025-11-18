@@ -38,6 +38,7 @@ const createMessPartnerPublic = asyncHandler(async (req, res) => {
     isOfficial,
     menu,
     image,
+    photos, // Handle photos array from frontend
     distance,
     googleMapLink,
     ownerName,
@@ -46,6 +47,12 @@ const createMessPartnerPublic = asyncHandler(async (req, res) => {
     mealsIncluded,
     totalSeats
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let messImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    messImage = photos[0]; // Use first photo as main image
+  }
 
   // For public submissions, always set isOfficial to false
   const mess = new Mess({
@@ -61,7 +68,7 @@ const createMessPartnerPublic = asyncHandler(async (req, res) => {
       name: '',
       price: 0
     })) : [],
-    image,
+    image: messImage,
     distance,
     googleMapLink,
     ownerName,
@@ -89,6 +96,7 @@ const createMessPartner = asyncHandler(async (req, res) => {
     isOfficial,
     menu,
     image,
+    photos, // Handle photos array from frontend
     distance,
     googleMapLink,
     ownerName,
@@ -97,6 +105,12 @@ const createMessPartner = asyncHandler(async (req, res) => {
     mealsIncluded,
     totalSeats
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let messImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    messImage = photos[0]; // Use first photo as main image
+  }
 
   const mess = new Mess({
     name,
@@ -111,7 +125,7 @@ const createMessPartner = asyncHandler(async (req, res) => {
       name: '',
       price: 0
     })) : [],
-    image,
+    image: messImage,
     distance,
     googleMapLink,
     ownerName,
@@ -140,6 +154,7 @@ const updateMessPartner = asyncHandler(async (req, res) => {
     isOfficial,
     menu,
     image,
+    photos, // Handle photos array from frontend
     rating,
     distance,
     googleMapLink,
@@ -159,6 +174,12 @@ const updateMessPartner = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
+    // Use photos array if available, otherwise use single image
+    let messImage = image || mess.image;
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      messImage = photos[0]; // Use first photo as main image
+    }
+
     mess.name = name || mess.name;
     mess.description = description || mess.description;
     mess.cuisine = cuisine || mess.cuisine;
@@ -171,7 +192,7 @@ const updateMessPartner = asyncHandler(async (req, res) => {
       name: '',
       price: 0
     })) : mess.menu;
-    mess.image = image || mess.image;
+    mess.image = messImage;
     mess.rating = rating || mess.rating;
     mess.distance = distance || mess.distance;
     mess.googleMapLink = googleMapLink || mess.googleMapLink;

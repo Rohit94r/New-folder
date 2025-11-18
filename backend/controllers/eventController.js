@@ -38,7 +38,14 @@ const createEventPublic = asyncHandler(async (req, res) => {
     contact,
     signUpLink,
     image,
+    photos, // Handle photos array from frontend
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let eventImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    eventImage = photos[0]; // Use first photo as main image
+  }
 
   // Create a default owner for public submissions
   const defaultOwner = await User.findOne({ email: 'public@roomeze.com' });
@@ -52,7 +59,7 @@ const createEventPublic = asyncHandler(async (req, res) => {
     organizer,
     contact,
     signUpLink,
-    image,
+    image: eventImage,
     owner: defaultOwner ? defaultOwner._id : null,
   });
 
@@ -74,7 +81,14 @@ const createEvent = asyncHandler(async (req, res) => {
     contact,
     signUpLink,
     image,
+    photos, // Handle photos array from frontend
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let eventImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    eventImage = photos[0]; // Use first photo as main image
+  }
 
   const event = new Event({
     title,
@@ -85,7 +99,7 @@ const createEvent = asyncHandler(async (req, res) => {
     organizer,
     contact,
     signUpLink,
-    image,
+    image: eventImage,
     owner: req.user._id,
   });
 
@@ -107,6 +121,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     contact,
     signUpLink,
     image,
+    photos, // Handle photos array from frontend
   } = req.body;
 
   const event = await Event.findById(req.params.id);
@@ -118,6 +133,12 @@ const updateEvent = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
+    // Use photos array if available, otherwise use single image
+    let eventImage = image || event.image;
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      eventImage = photos[0]; // Use first photo as main image
+    }
+
     event.title = title || event.title;
     event.description = description || event.description;
     event.category = category || event.category;
@@ -126,7 +147,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     event.organizer = organizer || event.organizer;
     event.contact = contact || event.contact;
     event.signUpLink = signUpLink || event.signUpLink;
-    event.image = image || event.image;
+    event.image = eventImage;
 
     const updatedEvent = await event.save();
     res.json(updatedEvent);

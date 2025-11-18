@@ -24,15 +24,54 @@ export default function AddPGPage() {
     deposit: "",
     totalSeats: "",
     address: "",
-    photos: [] as string[],
+    photos: [] as string[], // This will store base64 encoded images
     googleMapLink: "",
     description: ""
   });
+  
+  const [previewImages, setPreviewImages] = useState<string[]>([]); // For image previews
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newPreviewImages: string[] = [];
+    const newPhotos: string[] = [];
+
+    // Process each selected file
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          newPreviewImages.push(event.target.result as string);
+          newPhotos.push(event.target.result as string);
+          
+          // Update state when all files are processed
+          if (newPreviewImages.length === files.length) {
+            setPreviewImages(prev => [...prev, ...newPreviewImages]);
+            setFormData(prev => ({
+              ...prev,
+              photos: [...prev.photos, ...newPhotos]
+            }));
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setPreviewImages(prev => prev.filter((_, i) => i !== index));
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index)
+    }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -92,8 +131,6 @@ export default function AddPGPage() {
         return;
       }
 
-      // In a real app, you would upload photos and get URLs
-      // For now, we'll use placeholder images
       const propertyData = {
         name: formData.name,
         type: "PG",
@@ -107,7 +144,8 @@ export default function AddPGPage() {
         amenities: formData.amenities,
         totalSeats: Number(formData.totalSeats),
         availability: "Available",
-        image: "https://via.placeholder.com/400x300?text=PG+Hostel",
+        image: formData.photos.length > 0 ? formData.photos[0] : "https://via.placeholder.com/400x300?text=PG+Hostel",
+        photos: formData.photos, // Send all photos
         googleMapLink: formData.googleMapLink,
         description: formData.description
       };
@@ -381,8 +419,30 @@ export default function AddPGPage() {
                     className="hidden" 
                     accept="image/*" 
                     multiple 
-                    onChange={(e) => console.log('Files selected:', e.target.files)}
+                    onChange={handlePhotoChange}
                   />
+                  
+                  {/* Image previews */}
+                  {previewImages.length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {previewImages.map((image, index) => (
+                        <div key={index} className="relative">
+                          <img 
+                            src={image} 
+                            alt={`Preview ${index + 1}`} 
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               

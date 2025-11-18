@@ -9,9 +9,9 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 font-bold text-lg text-primary mb-4">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold">
-                RL
+                Rz
               </div>
-              Roomly
+              Roomeze
             </div>
             <p className="text-sm text-muted-foreground">Affordable living, made simple and safe for students.</p>
           </div>

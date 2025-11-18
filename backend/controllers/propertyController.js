@@ -67,6 +67,8 @@ const createPropertyPublic = asyncHandler(async (req, res) => {
     amenities,
     totalSeats,
     images,
+    photos, // Handle photos array from frontend
+    image,  // Handle single image from frontend
     phone,
     googleMapLink,
     ownerName,
@@ -75,6 +77,16 @@ const createPropertyPublic = asyncHandler(async (req, res) => {
   // Create a default owner for public submissions
   const defaultOwner = await User.findOne({ email: 'public@roomeze.com' });
   
+  // Use photos array if available, otherwise use images array, otherwise use single image
+  let propertyImages = [];
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    propertyImages = photos;
+  } else if (images && Array.isArray(images) && images.length > 0) {
+    propertyImages = images;
+  } else if (image) {
+    propertyImages = [image];
+  }
+
   const property = new Property({
     name,
     type,
@@ -87,7 +99,7 @@ const createPropertyPublic = asyncHandler(async (req, res) => {
     sharingType,
     amenities,
     totalSeats,
-    images,
+    images: propertyImages,
     phone,
     googleMapLink,
     ownerName,
@@ -115,7 +127,19 @@ const createProperty = asyncHandler(async (req, res) => {
     amenities,
     totalSeats,
     images,
+    photos, // Handle photos array from frontend
+    image,  // Handle single image from frontend
   } = req.body;
+
+  // Use photos array if available, otherwise use images array, otherwise use single image
+  let propertyImages = [];
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    propertyImages = photos;
+  } else if (images && Array.isArray(images) && images.length > 0) {
+    propertyImages = images;
+  } else if (image) {
+    propertyImages = [image];
+  }
 
   const property = new Property({
     name,
@@ -129,7 +153,7 @@ const createProperty = asyncHandler(async (req, res) => {
     sharingType,
     amenities,
     totalSeats,
-    images,
+    images: propertyImages,
     owner: req.user._id,
   });
 
@@ -154,6 +178,8 @@ const updateProperty = asyncHandler(async (req, res) => {
     amenities,
     totalSeats,
     images,
+    photos, // Handle photos array from frontend
+    image,  // Handle single image from frontend
     availability,
   } = req.body;
 
@@ -164,6 +190,16 @@ const updateProperty = asyncHandler(async (req, res) => {
     if (property.owner.toString() !== req.user._id.toString()) {
       res.status(401);
       throw new Error('Not authorized');
+    }
+
+    // Use photos array if available, otherwise use images array, otherwise use single image
+    let propertyImages = property.images;
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      propertyImages = photos;
+    } else if (images && Array.isArray(images) && images.length > 0) {
+      propertyImages = images;
+    } else if (image) {
+      propertyImages = [image];
     }
 
     property.name = name || property.name;
@@ -177,7 +213,7 @@ const updateProperty = asyncHandler(async (req, res) => {
     property.sharingType = sharingType || property.sharingType;
     property.amenities = amenities || property.amenities;
     property.totalSeats = totalSeats || property.totalSeats;
-    property.images = images || property.images;
+    property.images = propertyImages;
     property.availability = availability || property.availability;
 
     const updatedProperty = await property.save();

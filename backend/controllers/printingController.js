@@ -36,10 +36,17 @@ const createPrintingServicePublic = asyncHandler(async (req, res) => {
     timings,
     pricing,
     image,
+    photos, // Handle photos array from frontend
     distance,
     googleMapLink,
     ownerName,
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let printingImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    printingImage = photos[0]; // Use first photo as main image
+  }
 
   // Create a default owner for public submissions
   const defaultOwner = await User.findOne({ email: 'public@roomeze.com' });
@@ -51,7 +58,7 @@ const createPrintingServicePublic = asyncHandler(async (req, res) => {
     phone,
     timings,
     pricing,
-    image,
+    image: printingImage,
     distance,
     googleMapLink,
     ownerName,
@@ -74,7 +81,14 @@ const createPrintingService = asyncHandler(async (req, res) => {
     timings,
     pricing,
     image,
+    photos, // Handle photos array from frontend
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let printingImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    printingImage = photos[0]; // Use first photo as main image
+  }
 
   const printing = new Printing({
     name,
@@ -83,7 +97,7 @@ const createPrintingService = asyncHandler(async (req, res) => {
     phone,
     timings,
     pricing,
-    image,
+    image: printingImage,
     owner: req.user._id,
   });
 
@@ -103,6 +117,7 @@ const updatePrintingService = asyncHandler(async (req, res) => {
     timings,
     pricing,
     image,
+    photos, // Handle photos array from frontend
     rating,
   } = req.body;
 
@@ -115,13 +130,19 @@ const updatePrintingService = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
+    // Use photos array if available, otherwise use single image
+    let printingImage = image || printing.image;
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      printingImage = photos[0]; // Use first photo as main image
+    }
+
     printing.name = name || printing.name;
     printing.description = description || printing.description;
     printing.address = address || printing.address;
     printing.phone = phone || printing.phone;
     printing.timings = timings || printing.timings;
     printing.pricing = pricing || printing.pricing;
-    printing.image = image || printing.image;
+    printing.image = printingImage;
     printing.rating = rating || printing.rating;
 
     const updatedPrinting = await printing.save();

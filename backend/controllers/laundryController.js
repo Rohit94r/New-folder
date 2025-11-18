@@ -38,10 +38,17 @@ const createLaundryServicePublic = asyncHandler(async (req, res) => {
     deliveryAvailable,
     deliveryCharges,
     image,
+    photos, // Handle photos array from frontend
     distance,
     googleMapLink,
     ownerName,
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let laundryImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    laundryImage = photos[0]; // Use first photo as main image
+  }
 
   // Create a default owner for public submissions
   const defaultOwner = await User.findOne({ email: 'public@roomeze.com' });
@@ -55,7 +62,7 @@ const createLaundryServicePublic = asyncHandler(async (req, res) => {
     pricing,
     deliveryAvailable,
     deliveryCharges,
-    image,
+    image: laundryImage,
     distance,
     googleMapLink,
     ownerName,
@@ -80,7 +87,14 @@ const createLaundryService = asyncHandler(async (req, res) => {
     deliveryAvailable,
     deliveryCharges,
     image,
+    photos, // Handle photos array from frontend
   } = req.body;
+
+  // Use photos array if available, otherwise use single image
+  let laundryImage = image;
+  if (photos && Array.isArray(photos) && photos.length > 0) {
+    laundryImage = photos[0]; // Use first photo as main image
+  }
 
   const laundry = new Laundry({
     name,
@@ -91,7 +105,7 @@ const createLaundryService = asyncHandler(async (req, res) => {
     pricing,
     deliveryAvailable,
     deliveryCharges,
-    image,
+    image: laundryImage,
     owner: req.user._id,
   });
 
@@ -113,6 +127,7 @@ const updateLaundryService = asyncHandler(async (req, res) => {
     deliveryAvailable,
     deliveryCharges,
     image,
+    photos, // Handle photos array from frontend
     rating,
   } = req.body;
 
@@ -125,6 +140,12 @@ const updateLaundryService = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
+    // Use photos array if available, otherwise use single image
+    let laundryImage = image || laundry.image;
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      laundryImage = photos[0]; // Use first photo as main image
+    }
+
     laundry.name = name || laundry.name;
     laundry.description = description || laundry.description;
     laundry.address = address || laundry.address;
@@ -133,7 +154,7 @@ const updateLaundryService = asyncHandler(async (req, res) => {
     laundry.pricing = pricing || laundry.pricing;
     laundry.deliveryAvailable = deliveryAvailable || laundry.deliveryAvailable;
     laundry.deliveryCharges = deliveryCharges || laundry.deliveryCharges;
-    laundry.image = image || laundry.image;
+    laundry.image = laundryImage;
     laundry.rating = rating || laundry.rating;
 
     const updatedLaundry = await laundry.save();

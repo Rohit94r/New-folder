@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -22,8 +22,46 @@ export default function AddEventPage() {
     organizer: "",
     contact: "",
     signUpLink: "",
-    image: ""
+    image: "",
+    photos: [] as string[] // This will store base64 encoded images
   })
+  
+  const [previewImage, setPreviewImage] = useState<string | null>(null) // For image preview
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const file = files[0]
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        const imageData = event.target.result as string
+        setPreviewImage(imageData)
+        setFormData(prev => ({
+          ...prev,
+          image: imageData, // Use the first image as the main image
+          photos: [imageData] // Store in photos array as well
+        }))
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const removeImage = () => {
+    setPreviewImage(null)
+    setFormData(prev => ({
+      ...prev,
+      image: "",
+      photos: []
+    }))
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -276,16 +314,36 @@ export default function AddEventPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Event Image</h3>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-500 transition-colors">
                   <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 mb-2">Click to upload or drag and drop</p>
+                  <p className="text-gray-600 mb-2">Upload an image for your event</p>
                   <p className="text-sm text-gray-500">PNG, JPG up to 10MB</p>
-                  <input
-                    type="text"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                    className="mt-4 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter image URL for now"
+                  <Button type="button" variant="outline" className="mt-4" onClick={handlePhotoClick}>
+                    Select Image
+                  </Button>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    className="hidden" 
+                    accept="image/*" 
+                    onChange={handlePhotoChange}
                   />
+                  
+                  {/* Image preview */}
+                  {previewImage && (
+                    <div className="mt-4 relative">
+                      <img 
+                        src={previewImage} 
+                        alt="Event preview" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
